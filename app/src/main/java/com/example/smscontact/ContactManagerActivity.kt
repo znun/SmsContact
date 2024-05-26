@@ -1,22 +1,19 @@
 package com.example.smscontact
 
-
-
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.provider.ContactsContract
+import android.util.Log
 import android.widget.Button
 import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.edit
 
 class ContactManagerActivity : AppCompatActivity() {
 
     private lateinit var contactListAdapter: ContactListAdapter
-    private val PREFS_NAME = "com.example.rescue_mate.prefs"
-    private val PREFS_KEY_CONTACTS = "contacts"
     private val PICK_CONTACT_REQUEST = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,29 +21,24 @@ class ContactManagerActivity : AppCompatActivity() {
         setContentView(R.layout.activity_contact_manager)
 
         val contacts = loadContacts()
-
         contactListAdapter = ContactListAdapter(this, contacts) { position ->
             contactListAdapter.removeContact(position)
             saveContacts(contactListAdapter.getContacts())
         }
 
-        val listView: ListView = findViewById(R.id.contact_list_view)
-        listView.adapter = contactListAdapter
+        val contactListView: ListView = findViewById(R.id.contact_list_view)
+        contactListView.adapter = contactListAdapter
 
-        val addButton: Button = findViewById(R.id.add_contact_button)
-        addButton.setOnClickListener {
-            pickContact()
+        val addContactButton: Button = findViewById(R.id.add_contact_button)
+        addContactButton.setOnClickListener {
+            val pickContactIntent = Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI)
+            startActivityForResult(pickContactIntent, PICK_CONTACT_REQUEST)
         }
-    }
-
-    private fun pickContact() {
-        val intent = Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI)
-        startActivityForResult(intent, PICK_CONTACT_REQUEST)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PICK_CONTACT_REQUEST && resultCode == RESULT_OK) {
+        if (requestCode == PICK_CONTACT_REQUEST && resultCode == Activity.RESULT_OK) {
             data?.data?.let { contactUri ->
                 val cursor = contentResolver.query(contactUri, null, null, null, null)
                 if (cursor != null && cursor.moveToFirst()) {
@@ -59,7 +51,7 @@ class ContactManagerActivity : AppCompatActivity() {
                             val phones = contentResolver.query(
                                 ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                                 null,
-                                ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
+                                "${ContactsContract.CommonDataKinds.Phone.CONTACT_ID} = ?",
                                 arrayOf(contactId),
                                 null
                             )
@@ -72,6 +64,7 @@ class ContactManagerActivity : AppCompatActivity() {
                                     val contact = Contact(contactName, contactNumber)
                                     contactListAdapter.addContact(contact)
                                     saveContacts(contactListAdapter.getContacts())
+                                    Log.d("ContactManager", "Contact saved: $contact")
                                 }
                                 phones.close()
                             }
@@ -84,15 +77,16 @@ class ContactManagerActivity : AppCompatActivity() {
     }
 
     private fun loadContacts(): MutableList<Contact> {
-        val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        val contactsJson = prefs.getString(PREFS_KEY_CONTACTS, "[]")
+        val prefs = getSharedPreferences("com.example.smscontact.prefs", Context.MODE_PRIVATE)
+        val contactsJson = prefs.getString("contacts", "[]")
+        Log.d("ContactManager", "Loaded contacts: $contactsJson")
         return Contact.fromJson(contactsJson)
     }
 
     private fun saveContacts(contacts: List<Contact>) {
-        val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        prefs.edit {
-            putString(PREFS_KEY_CONTACTS, Contact.toJson(contacts))
-        }
+        val prefs = getSharedPreferences("com.example.smscontact.prefs", Context.MODE_PRIVATE)
+        val contactsJson = Contact.toJson(contacts)
+        Log.d("ContactManager", "Saving contacts: $contactsJson")
+        prefs.edit().putString("contacts", contactsJson).apply()
     }
 }
