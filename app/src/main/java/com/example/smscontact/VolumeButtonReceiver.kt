@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import androidx.core.content.ContextCompat
 
 class VolumeButtonReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
@@ -12,7 +13,7 @@ class VolumeButtonReceiver : BroadcastReceiver() {
             val serviceIntent = Intent(context, VolumeButtonService::class.java).apply {
                 action = "com.example.smscontact.VOLUME_BUTTON_PRESSED"
             }
-            context.startService(serviceIntent)
+            ContextCompat.startForegroundService(context, serviceIntent)
         }
     }
 }

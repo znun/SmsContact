@@ -21,10 +21,6 @@ import com.google.android.gms.location.*
 
 class VolumeButtonService : Service() {
 
-    private var volumeButtonPressCount = 0
-    private val pressThreshold = 3
-    private val intervalMillis: Long = 5000 // 5 seconds
-
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
 
@@ -70,45 +66,13 @@ class VolumeButtonService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d("VolumeButtonService", "Service started with action: ${intent?.action}")
         if (intent?.action == "com.example.smscontact.VOLUME_BUTTON_PRESSED") {
-            onVolumeButtonPressed()
+            requestLocation()
         }
         return START_STICKY
     }
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
-    }
-
-    override fun onTaskRemoved(rootIntent: Intent?) {
-        super.onTaskRemoved(rootIntent)
-        Log.d("VolumeButtonService", "Service task removed")
-        val restartServiceIntent = Intent(applicationContext, this::class.java).also {
-            it.setPackage(packageName)
-        }
-        startService(restartServiceIntent)
-    }
-
-    private fun onVolumeButtonPressed() {
-        volumeButtonPressCount++
-        Log.d("VolumeButtonService", "Volume button pressed. Count: $volumeButtonPressCount")
-        if (volumeButtonPressCount == 1) {
-            startPressCountDown()
-        }
-        if (volumeButtonPressCount >= pressThreshold) {
-            Log.d("VolumeButtonService", "Press threshold reached. Requesting location.")
-            requestLocation()
-            volumeButtonPressCount = 0
-        }
-    }
-
-    private fun startPressCountDown() {
-        object : CountDownTimer(intervalMillis, intervalMillis) {
-            override fun onTick(millisUntilFinished: Long) {}
-            override fun onFinish() {
-                volumeButtonPressCount = 0
-                Log.d("VolumeButtonService", "Count down finished. Resetting press count.")
-            }
-        }.start()
     }
 
     private fun requestLocation() {
@@ -123,7 +87,6 @@ class VolumeButtonService : Service() {
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         }
 
-        Log.d("VolumeButtonService", "Requesting location updates.")
         fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null)
     }
 
