@@ -1,10 +1,10 @@
 //package com.example.smscontact
 //
 //import android.Manifest
-//import android.accessibilityservice.AccessibilityService
 //import android.content.ComponentName
 //import android.content.Context
 //import android.content.Intent
+//import android.accessibilityservice.AccessibilityService
 //import android.content.SharedPreferences
 //import android.content.pm.PackageManager
 //import android.location.Location
@@ -41,7 +41,7 @@
 //        val sendLocationButton: Button = findViewById(R.id.send_location_button)
 //        sendLocationButton.setOnClickListener {
 //            Log.d("LocationSMS", "Send Location button clicked")
-//            requestPermissionsIfNeeded()
+//            requestPermissionsIfNeededForButton()
 //        }
 //
 //        val manageContactsButton: Button = findViewById(R.id.manage_contacts_button)
@@ -64,7 +64,11 @@
 //        disableServiceButton.setOnClickListener {
 //            prefs.edit().putBoolean("service_enabled", false).apply()
 //            stopVolumeButtonService()
-//            Toast.makeText(this, "Service disabled", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this, "Service disable Setting", Toast.LENGTH_SHORT).show()
+//
+//            // Navigate to Accessibility settings
+//            val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+//            startActivity(intent)
 //        }
 //
 //        // Start the service if it is enabled in preferences
@@ -81,7 +85,7 @@
 //        }
 //    }
 //
-//    private fun requestPermissionsIfNeeded() {
+//    private fun requestPermissionsIfNeededForButton() {
 //        val permissionsNeeded = mutableListOf<String>()
 //        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 //            permissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -93,16 +97,17 @@
 //        if (permissionsNeeded.isNotEmpty()) {
 //            Log.d("LocationSMS", "Requesting permissions: $permissionsNeeded")
 //            ActivityCompat.requestPermissions(this, permissionsNeeded.toTypedArray(), REQUEST_PERMISSIONS)
+//        } else {
+//            requestLocationForButton()
 //        }
 //    }
-//
 //
 //    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
 //        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 //        if (requestCode == REQUEST_PERMISSIONS) {
 //            if (grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
 //                Log.d("LocationSMS", "Permissions granted")
-//                requestLocation()
+//                requestLocationForButton()
 //            } else {
 //                Log.d("LocationSMS", "Permissions denied")
 //                Toast.makeText(this, "Permissions required to send location SMS.", Toast.LENGTH_SHORT).show()
@@ -110,8 +115,8 @@
 //        }
 //    }
 //
-//
-//    private fun requestLocation() {
+//    private fun requestLocationForButton() {
+//        Log.d("LocationSMS", "Requesting location for button")
 //        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 //            Toast.makeText(this, "Location permission not granted", Toast.LENGTH_SHORT).show()
 //            return
@@ -166,6 +171,33 @@
 //        return Contact.fromJson(contactsJson)
 //    }
 //
+//    private fun isAccessibilityServiceEnabled(context: Context, service: Class<out AccessibilityService>): Boolean {
+//        val am = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
+//        val enabledServices = Settings.Secure.getString(context.contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)
+//        val colonSplitter = TextUtils.SimpleStringSplitter(':')
+//        colonSplitter.setString(enabledServices)
+//        val myComponentName = ComponentName(context, service).flattenToString()
+//        while (colonSplitter.hasNext()) {
+//            val componentName = colonSplitter.next()
+//            if (componentName.equals(myComponentName, ignoreCase = true)) {
+//                return true
+//            }
+//        }
+//        return false
+//    }
+//
+//    private fun showAccessibilityServiceDialog() {
+//        AlertDialog.Builder(this)
+//            .setTitle("Enable Accessibility Service")
+//            .setMessage("To use the volume button functionality, you need to enable the accessibility service. Would you like to enable it now?")
+//            .setPositiveButton("Yes") { _, _ ->
+//                val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+//                startActivity(intent)
+//            }
+//            .setNegativeButton("No", null)
+//            .show()
+//    }
+//
 //    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
 //        if (keyCode == KeyEvent.KEYCODE_VOLUME_UP || keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
 //            val intent = Intent(this, VolumeButtonService::class.java).apply {
@@ -186,43 +218,18 @@
 //        val intent = Intent(this, VolumeButtonService::class.java)
 //        stopService(intent)
 //    }
-//
-//    private fun showAccessibilityServiceDialog() {
-//        AlertDialog.Builder(this)
-//            .setTitle("Enable Accessibility Service")
-//            .setMessage("To use the volume button functionality, you need to enable the accessibility service. Would you like to enable it now?")
-//            .setPositiveButton("Yes") { _, _ ->
-//                val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-//                startActivity(intent)
-//            }
-//            .setNegativeButton("No", null)
-//            .show()
-//    }
-//
-//    private fun isAccessibilityServiceEnabled(context: Context, service: Class<out AccessibilityService>): Boolean {
-//        val am = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
-//        val enabledServices = Settings.Secure.getString(context.contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)
-//        val colonSplitter = TextUtils.SimpleStringSplitter(':')
-//        colonSplitter.setString(enabledServices)
-//        val myComponentName = ComponentName(context, service).flattenToString()
-//        while (colonSplitter.hasNext()) {
-//            val componentName = colonSplitter.next()
-//            if (componentName.equals(myComponentName, ignoreCase = true)) {
-//                return true
-//            }
-//        }
-//        return false
-//    }
 //}
 
-//--------------------------
+//---------------------------
 
 package com.example.smscontact
 
 import android.Manifest
-import android.content.Context
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.os.BatteryManager
 import android.accessibilityservice.AccessibilityService
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
@@ -283,7 +290,11 @@ class MainActivity : AppCompatActivity() {
         disableServiceButton.setOnClickListener {
             prefs.edit().putBoolean("service_enabled", false).apply()
             stopVolumeButtonService()
-            Toast.makeText(this, "Service disabled", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Service disable Setting", Toast.LENGTH_SHORT).show()
+
+            // Navigate to Accessibility settings
+            val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+            startActivity(intent)
         }
 
         // Start the service if it is enabled in preferences
@@ -354,7 +365,8 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        val message = "My current location is: https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}"
+        val batteryStatus = getBatteryStatus()
+        val message = "My current location is: https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}. $batteryStatus"
         Log.d("LocationSMS", "Location obtained: $message")
         for (contact in contacts) {
             sendSMS(contact.number, message)
@@ -432,5 +444,18 @@ class MainActivity : AppCompatActivity() {
     private fun stopVolumeButtonService() {
         val intent = Intent(this, VolumeButtonService::class.java)
         stopService(intent)
+    }
+    private fun getBatteryStatus(): String {
+        val batteryStatus: Intent? = IntentFilter(Intent.ACTION_BATTERY_CHANGED).let { ifilter ->
+            this.registerReceiver(null, ifilter)
+        }
+
+        val batteryPct: Float? = batteryStatus?.let { intent ->
+            val level: Int = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
+            val scale: Int = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
+            level / scale.toFloat() * 100
+        }
+
+        return "Battery Level: ${batteryPct?.toInt()}%"
     }
 }
