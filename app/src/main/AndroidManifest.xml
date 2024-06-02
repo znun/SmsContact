@@ -36,6 +36,7 @@
         </activity>
 
         <activity android:name=".ContactManagerActivity" />
+        <activity android:name=".NameEntryActivity" />
 
         <receiver android:name=".BootReceiver" android:enabled="true" android:exported="false">
             <intent-filter>
