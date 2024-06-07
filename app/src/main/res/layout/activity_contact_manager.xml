@@ -9,6 +9,7 @@
         android:id="@+id/add_contact_button"
         style="@style/ButtonStyle"
         android:text="Add Contact"
+        android:layout_width="310dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

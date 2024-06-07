@@ -12,4 +12,5 @@
     <color name="colorTextSecondary">#757575</color>
     <color name="colorButtonBackground">#6200EE</color>
     <color name="colorButtonText">#FFFFFF</color>
+    <color name="colorButtonText2">#8080FF</color>
 </resources>
