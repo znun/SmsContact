@@ -6,11 +6,13 @@
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
     <color name="colorAccentDark">#018786</color>
-    <color name="colorRed">#FF0000</color>
+    <color name="colorRed">#FF0000</color> <!-- Red color for the button -->
     <color name="colorBackground">#FFFFFF</color>
     <color name="colorTextPrimary">#212121</color>
     <color name="colorTextSecondary">#757575</color>
+    <color name="titleColor">#8B0000</color>
     <color name="colorButtonBackground">#6200EE</color>
     <color name="colorButtonText">#FFFFFF</color>
-    <color name="colorButtonText2">#8080FF</color>
+    <color name="colorButtonBackground2">#8080FF</color>
+    <color name="colorButtonBackground3">#5A999F</color>
 </resources>

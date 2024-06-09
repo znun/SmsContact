@@ -3,26 +3,49 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@color/colorBackground">
+
+    <!-- Space element to move the title down -->
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="40dp" /> <!-- Adjust the height as needed -->
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Enter your name"
-        android:textSize="18sp"
-        android:layout_gravity="center"/>
+        android:text="RESCUE MATE"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@color/titleColor"
+        android:layout_gravity="center"
+        android:layout_marginBottom="24dp"/>
+
+    <!-- Space element to move components down -->
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="188dp" />
+
+
 
     <EditText
         android:id="@+id/name_edit_text"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Name"
-        android:inputType="textPersonName"/>
+        android:layout_height="48dp"
+        android:hint="Enter Your Name"
+        android:inputType="textPersonName"
+        android:textColor="@color/colorTextPrimary"
+        android:padding="12dp"
+        android:layout_marginTop="16dp"/>
 
     <Button
         android:id="@+id/save_name_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Save"
-        android:layout_gravity="center"/>
+        android:layout_width="200dp"
+        android:layout_height="60dp"
+        android:text="Continue"
+        android:backgroundTint="@color/colorButtonBackground3"
+        android:textColor="@color/colorButtonText"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"/>
+
 </LinearLayout>

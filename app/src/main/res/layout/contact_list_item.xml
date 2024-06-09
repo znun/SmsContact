@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp">
+    android:padding="8dp"
+    android:background="@color/colorBackground">
 
     <TextView
         android:id="@+id/contact_name"
@@ -11,6 +12,7 @@
         android:layout_height="wrap_content"
         android:text="Name"
         android:textSize="18sp"
+        android:textColor="@color/colorTextPrimary"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/delete_contact_button"
@@ -22,6 +24,7 @@
         android:layout_height="wrap_content"
         android:text="Number"
         android:textSize="16sp"
+        android:textColor="@color/colorTextPrimary"
         app:layout_constraintTop_toBottomOf="@id/contact_name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/delete_contact_button"

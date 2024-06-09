@@ -5,7 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@color/colorBackground">
+
+    <!-- Title Guideline -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.06" /> <!-- Adjusted percentage to move title higher -->
 
     <!-- Top Guideline -->
     <androidx.constraintlayout.widget.Guideline
@@ -13,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.35" />
+        app:layout_constraintGuide_percent="0.30" />
 
     <!-- Bottom Guideline -->
     <androidx.constraintlayout.widget.Guideline
@@ -23,21 +32,34 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.9" />
 
+    <TextView
+        android:id="@+id/title_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="RESCUE MATE"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@color/titleColor"
+        app:layout_constraintTop_toBottomOf="@id/guideline_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="8dp"/>
+
     <Button
         android:id="@+id/send_location_button"
         android:text="Send Location"
-        android:background="@drawable/circular_red_button_background"
-        style="@style/RoundButtonStyle"
-        android:textColor="@color/white"
         android:layout_width="150dp"
         android:layout_height="150dp"
+        android:backgroundTint="@color/colorRed"
+        android:textColor="@color/white"
         app:layout_constraintTop_toBottomOf="@id/guideline_top"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/manage_contacts_button"
         app:layout_constraintVertical_chainStyle="packed"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintVertical_bias="0.5" />
+        app:layout_constraintVertical_bias="0.5"
+        android:shape="oval" />
 
     <Button
         android:id="@+id/manage_contacts_button"
@@ -62,7 +84,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="16dp"
         android:textAlignment="center"
-        android:textColor="@color/white"
+        android:textColor="@color/colorTextPrimary"
         app:layout_constraintTop_toBottomOf="@id/manage_contacts_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
