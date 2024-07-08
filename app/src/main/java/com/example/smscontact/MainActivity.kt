@@ -16,6 +16,7 @@ import android.provider.Settings
 import android.telephony.SmsManager
 import android.text.TextUtils
 import android.util.Log
+import android.os.Handler
 import android.view.KeyEvent
 import android.view.accessibility.AccessibilityManager
 import android.widget.Button
@@ -25,6 +26,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.*
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -169,7 +171,19 @@ class MainActivity : AppCompatActivity() {
             sendSMS(contact.number, message)
         }
         fusedLocationClient.removeLocationUpdates(locationCallback) // Stop location updates after getting the location
+
+        // Schedule the next SMS
+     scheduleSMS(location)
     }
+//Followup Message
+    private fun scheduleSMS(location: Location) {
+        val handler = Handler(mainLooper)
+        val runnable = Runnable {
+            sendLocationSMS(location)
+        }
+        handler.postDelayed(runnable, 15 * 60 * 1000) // 15 minutes in milliseconds
+    }
+
 
     private fun sendSMS(phoneNumber: String, message: String) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
