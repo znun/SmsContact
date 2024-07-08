@@ -77,10 +77,18 @@ class MainActivity : AppCompatActivity() {
         }
 
         val disableServiceButton: Button = findViewById(R.id.disable_service_button)
+//        disableServiceButton.setOnClickListener {
+//            prefs.edit().putBoolean("service_enabled", false).apply()
+//            stopVolumeButtonService()
+//            Toast.makeText(this, "Service disabled", Toast.LENGTH_SHORT).show()
+
         disableServiceButton.setOnClickListener {
             prefs.edit().putBoolean("service_enabled", false).apply()
             stopVolumeButtonService()
             Toast.makeText(this, "Service disabled", Toast.LENGTH_SHORT).show()
+
+            val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+            startActivity(intent)
         }
 
         if (prefs.getBoolean("service_enabled", false)) {
